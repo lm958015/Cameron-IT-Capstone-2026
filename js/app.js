@@ -66,7 +66,7 @@ async function start() {
     // Build sidenav buttons
     buildMenu(role);
 
-    // Load correct role dashboard
+    // Load the correct dashboard for the role
     renderDashboardShell(role);
 
   } catch (err) {
