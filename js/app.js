@@ -51,18 +51,18 @@ async function start() {
   try {
     const user = await api("api/auth/me.php");
 
-    // logged in layout
-    document.querySelector(".app")?.classList.remove("logged-out");
-
     // Show welcome text
     const welcome = document.getElementById("welcome");
     if (welcome) {
       welcome.innerText = `${user.name} (${user.role})`;
     }
 
-    // Build menu + default view for this role
-    buildMenu(user.role);
-    loadAdmin();
+    // Normalize DB role value
+    const role = normalizeRole(user.role);
+
+    // Load the correct dashboard for the role
+    renderDashboardShell(role);
+
   } catch (err) {
     showLogin();
   }
