@@ -304,5 +304,21 @@ function nurse_intake() {
   loadNurse();
 }
 
+// ----------------------------- 
+// Receptionist Views  
+// ----------------------------- 
+function rx_home() { 
+ buildMenu("receptionist"); 
+ loadReception(); 
+} 
+function rx_registerPatient() {
+ loadReception();
+ rx_showPatientCreate(); 
+} 
+function rx_appointments() {
+ loadReception();
+ rx_showAppointmentBoard(); 
+}
+
 // Start the app
 start();
