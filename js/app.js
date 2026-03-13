@@ -186,17 +186,11 @@ function renderDashboardShell(role) {
     nurse_home();
     return;
   }
-
-  if (role === "receptionist") {
-    nav.innerHTML = `
-      <button class="navbtn" onclick="rx_home()">Reception Home</button>
-      <button class="navbtn" onclick="rx_registerPatient()">Register Patient</button>
-      <button class="navbtn" onclick="rx_appointments()">Appointments</button>
-      <button class="navbtn" onclick="doLogout()">Logout</button>
-    `;
-    rx_home();
-    return;
-  }
+if (role === "receptionist") {
+  rx_home();
+  return;
+}
+  
 
   nav.innerHTML = `
     <div style="padding:10px;">
@@ -302,6 +296,22 @@ function nurse_schedule() {
 
 function nurse_intake() {
   loadNurse();
+}
+
+// ----------------------------- 
+// Receptionist Views  
+// ----------------------------- 
+function rx_home() { 
+ buildMenu("receptionist"); 
+ loadReception(); 
+} 
+function rx_registerPatient() {
+ loadReception();
+ rx_showPatientCreate(); 
+} 
+function rx_appointments() {
+ loadReception();
+ rx_showAppointmentBoard(); 
 }
 
 // Start the app

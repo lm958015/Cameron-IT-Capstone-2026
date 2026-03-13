@@ -1,10 +1,10 @@
 // js/roles/receptionist.js
 
 function loadReception(){
-  const content = document.getElementById("content");
+  const content = document.getElementById("dash_view") || document.getElementById("content");
   content.innerHTML = `
     <div class="card">
-      <h2>Receptionist — Front Desk</h2>
+      <h2>Receptionist - Front Desk</h2>
       <p>Patients + Appointments</p>
 
       <div id="rx_tiles"></div>
@@ -39,16 +39,16 @@ async function rx_loadTilesAndNext(){
   tilesWrap.innerHTML = `<div style="margin-top:12px; color: var(--muted); font-weight:700;">Loading front desk…</div>`;
   nextWrap.innerHTML  = "";
 
-  const d = await apiSafe("api/receptionist/dashboard_summary.php");
+  const d = await api("api/receptionist/dashboard_summary.php");
 
   tilesWrap.innerHTML = `
     <div class="tiles">
       ${rx_tile("Patients (Total)", d.totalPatients, `Clinic registry`, "P", "sage")}
       ${rx_tile("Appointments Today", d.appointmentsToday, `All statuses`, "C", "gold")}
       ${rx_tile("Scheduled Today", d.scheduledToday, `Upcoming visits`, "S", "teal")}
-      ${rx_tile("Checked-In Today", d.checkedInToday, `Waiting/arrived`, "✓", "dark")}
-      ${rx_tile("Completed Today", d.completedToday, `Finished`, "✔", "teal")}
-      ${rx_tile("Cancelled Today", d.cancelledToday, `Cancelled`, "×", "gold")}
+      ${rx_tile("Checked-In Today", d.checkedInToday, `Waiting/arrived`, "\u2713", "dark")}
+      ${rx_tile("Completed Today", d.completedToday, `Finished`, "\u2713", "teal")}
+      ${rx_tile("Cancelled Today", d.cancelledToday, `Cancelled`, "\u2715", "gold")}
     </div>
   `;
 
@@ -133,7 +133,7 @@ async function rx_patientSearch(){
     return;
   }
 
-  const data = await apiSafe(`api/receptionist/patients_search.php?search=${encodeURIComponent(q)}`);
+  const data = await api(`api/receptionist/patients_search.php?search=${encodeURIComponent(q)}`);
 
   const rows = data.patients.map(p => `
     <tr>
@@ -194,7 +194,7 @@ async function rx_createPatient(){
   const email     = document.getElementById("p_email").value.trim();
   const dob       = document.getElementById("p_dob").value;
 
-  const res = await apiSafe("api/receptionist/patients_create.php","POST",{firstName,lastName,phone,email,dob});
+  const res = await api("api/receptionist/patients_create.php","POST",{firstName,lastName,phone,email,dob});
   toast("Patient created", `Patient ID ${res.patientId}`, "ok");
 
   document.getElementById("rx_msg").innerHTML = `<span class="badge teal">Created Patient ID: ${res.patientId}</span>`;
@@ -233,7 +233,7 @@ async function rx_updatePatient(patientId){
   const email     = document.getElementById("e_email").value.trim();
   const dob       = document.getElementById("e_dob").value;
 
-  await apiSafe("api/receptionist/patients_update.php","POST",{patientId,firstName,lastName,phone,email,dob});
+  await api("api/receptionist/patients_update.php","POST",{patientId,firstName,lastName,phone,email,dob});
   toast("Saved", "Patient updated", "ok");
   document.getElementById("rx_msg").innerHTML = `<span class="badge teal">Saved</span>`;
   await rx_loadTilesAndNext();
@@ -273,7 +273,7 @@ async function rx_loadAppointments(){
   const from = document.getElementById("a_from").value;
   const to   = document.getElementById("a_to").value;
 
-  const data = await apiSafe(`api/receptionist/appointments_list.php?from=${from}&to=${to}`);
+  const data = await api(`api/receptionist/appointments_list.php?from=${from}&to=${to}`);
 
   const rows = data.appointments.map(a => `
     <tr>
@@ -304,7 +304,7 @@ async function rx_loadAppointments(){
 }
 
 async function rx_showAppointmentCreate(){
-  const providers = await apiSafe("api/receptionist/providers_list.php");
+  const providers = await api("api/receptionist/providers_list.php");
   const providerOptions = providers.providers.map(p =>
     `<option value="${p.User_ID}">${p.Last_Name}, ${p.First_Name}</option>`
   ).join("");
@@ -355,7 +355,7 @@ async function rx_createAppointment(){
   const startDateTime = document.getElementById("ap_start").value;
   const endDateTime   = document.getElementById("ap_end").value;
 
-  const res = await apiSafe("api/receptionist/appointments_create.php","POST",{
+  const res = await api("api/receptionist/appointments_create.php","POST",{
     patientId, providerUserId, startDateTime, endDateTime
   });
 
@@ -412,7 +412,7 @@ async function rx_updateAppointment(appointmentId){
   const startDateTime = document.getElementById("ea_start").value;
   const endDateTime   = document.getElementById("ea_end").value;
 
-  await apiSafe("api/receptionist/appointments_update.php","POST",{
+  await api("api/receptionist/appointments_update.php","POST",{
     appointmentId, providerUserId, startDateTime, endDateTime
   });
 
@@ -423,14 +423,14 @@ async function rx_updateAppointment(appointmentId){
 }
 
 async function rx_cancelAppointment(appointmentId){
-  await apiSafe("api/receptionist/appointments_cancel.php","POST",{appointmentId});
+  await api("api/receptionist/appointments_cancel.php","POST",{appointmentId});
   toast("Updated", "Appointment cancelled", "ok");
   await rx_loadAppointments();
   await rx_loadTilesAndNext();
 }
 
 async function rx_checkin(appointmentId){
-  await apiSafe("api/receptionist/appointments_checkin.php","POST",{appointmentId});
+  await api("api/receptionist/appointments_checkin.php","POST",{appointmentId});
   toast("Checked in", `Appointment #${appointmentId}`, "ok");
   if (document.getElementById("rx_appts")) await rx_loadAppointments();
   await rx_loadTilesAndNext();

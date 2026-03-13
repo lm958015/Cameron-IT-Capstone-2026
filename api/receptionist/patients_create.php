@@ -17,7 +17,7 @@ if ($first === "" || $last === "" || $phone === "" || $dob === "") {
 }
 
 $stmt = $pdo->prepare("
-  INSERT INTO Patients (First_Name, Last_Name, Phone_Number, Email, Date_Of_Birth)
+  INSERT INTO Patient (First_Name, Last_Name, Phone_Number, Email, Date_Of_Birth)
   VALUES (?, ?, ?, ?, ?)
 ");
 $stmt->execute([$first, $last, $phone, ($email === "" ? null : $email), $dob]);
