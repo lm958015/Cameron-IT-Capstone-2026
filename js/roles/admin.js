@@ -3,25 +3,67 @@
 let adminEventLogs = [];
 let adminEventLogsInterval = null;
 
-function loadAdmin(){
-  const content = document.getElementById("content");
-
-  content.innerHTML = `
-    <div class="admin-page-shell">
-      <div class="admin-page-header">
-        <h2>Administrator - System Oversight</h2>
-        <p>Users, system status, reporting</p>
+function loadAdmin() {
+  setView(`
+    <div class="admin-home-wrap">
+      <div class="page-header">
+        <h2>Administrator Dashboard</h2>
+        <p>Manage clinic operations, users, and system activity.</p>
       </div>
 
-      <div id="admin_tiles" class="admin-tiles-wrap"></div>
-      <div id="admin_panel" class="admin-panel-wrap"></div>
+      <div class="admin-cards">
+        <div class="admin-card">
+          <h3>Total Users</h3>
+          <p>24</p>
+          <span>Active clinic accounts</span>
+        </div>
+
+        <div class="admin-card">
+          <h3>Today's Appointments</h3>
+          <p>18</p>
+          <span>Scheduled visits today</span>
+        </div>
+
+        <div class="admin-card">
+          <h3>Staff On Duty</h3>
+          <p>9</p>
+          <span>Doctors, nurses, and front desk</span>
+        </div>
+
+        <div class="admin-card">
+          <h3>System Alerts</h3>
+          <p>2</p>
+          <span>Items needing attention</span>
+        </div>
+      </div>
+
+      <div class="admin-home-grid">
+        <div class="admin-panel-box">
+          <h3>Quick Actions</h3>
+          <div class="quick-actions">
+            <button class="admin-action-btn" onclick="admin_users()">Manage Users</button>
+            <button class="admin-action-btn" onclick="admin_reports()">Reports</button>
+          </div>
+        </div>
+
+        <div class="admin-panel-box">
+          <h3>Recent Activity</h3>
+          <ul class="admin-activity-list">
+            <li>New user account created for Nurse Logan</li>
+            <li>Appointment schedule updated for today</li>
+            <li>Monthly clinic report generated</li>
+            <li>System settings reviewed by administrator</li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="admin_panel"></div>
+      <div id="admin_create_wrap" style="display:none;"></div>
+      <div id="admin_msg"></div>
     </div>
-  `;
-
+  `);
   admin_loadTiles();
-  admin_showUsers();
 }
-
 function admin_loadTiles(){
   const wrap = document.getElementById("admin_tiles");
   if (!wrap) return;
@@ -89,52 +131,43 @@ function admin_clearEventLogsInterval(){
    USERS
 ------------------------- */
 
-function admin_showUsers(){
+function admin_showUsers() {
   admin_clearEventLogsInterval();
-  admin_setActiveTab("users");
 
-  admin_panel(`
-    <div class="admin-users-shell">
-      <div class="admin-users-toolbar card">
-        <div class="admin-search-wrap">
-          <span class="admin-search-icon">&#128269;</span>
-          <input
-            id="adminUserSearch"
-            class="admin-search-input"
-            type="text"
-            placeholder="Search users by name, username, email, or role..."
-            oninput="admin_filterUsers()"
-          >
-        </div>
-
-        <button type="button" id="adminAddUserBtn" class="admin-add-user-btn">
-          <span class="plus">+</span>
-          <span>Add User</span>
-        </button>
-
-        <div class="admin-users-stats" id="adminUsersStats">
-          Total Users: 0 | Active: 0 | Locked: 0
-        </div>
-      </div>
-
-      <div id="admin_create_wrap" style="display:none;"></div>
-
-      <div class="card admin-users-table-card">
-        <div id="admin_users"></div>
-      </div>
+  setView(`
+    <div class="page-header">
+      <h2>User Management</h2>
+      <p>View, search, and manage clinic users.</p>
     </div>
+
+    <div class="admin-panel-box">
+      <div class="admin-users-toolbar">
+        <input
+          id="adminUserSearch"
+          type="text"
+          placeholder="Search users..."
+          oninput="admin_filterUsers()"
+        />
+        <button id="adminAddUserBtn" class="admin-action-btn">+ Add User</button>
+      </div>
+
+      <div id="adminUsersStats" class="admin-users-stats">Total Users: 0 | Active: 0 | Locked: 0</div>
+      <div id="admin_users"></div>
+    </div>
+
+    <div id="admin_create_wrap" style="display:none;"></div>
+    <div id="admin_msg"></div>
   `);
 
   const addBtn = document.getElementById("adminAddUserBtn");
   if (addBtn) {
-    addBtn.addEventListener("click", function(){
+    addBtn.addEventListener("click", function () {
       admin_showCreateUser();
     });
   }
 
   admin_loadUsers();
 }
-
 function admin_loadUsers(){
   // UI-only mock data for now
   window.adminUsersData = [
