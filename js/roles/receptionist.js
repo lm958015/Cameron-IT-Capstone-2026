@@ -9,14 +9,7 @@ function loadReceptionist(){
 
       <div id="rx_tiles"></div>
 
-      <div class="section">
-        <div class="section-title">
-          <h3>Quick Actions</h3>
-          <div class="tools">
-            <button class="primary" onclick="rx_showPatientSearch()">Search Patients</button>
-            <button class="secondary" onclick="rx_showPatientCreate()">Register Patient</button>
-            <button class="ghost" onclick="rx_showAppointmentBoard()">Appointments Board</button>
-          </div>
+                
         </div>
       </div>
 
@@ -46,9 +39,9 @@ async function rx_loadTilesAndNext(){
       ${rx_tile("Patients (Total)", d.totalPatients, `Clinic registry`, "P", "sage")}
       ${rx_tile("Appointments Today", d.appointmentsToday, `All statuses`, "C", "gold")}
       ${rx_tile("Scheduled Today", d.scheduledToday, `Upcoming visits`, "S", "teal")}
-      ${rx_tile("Checked-In Today", d.checkedInToday, `Waiting/arrived`, "✓", "dark")}
-      ${rx_tile("Completed Today", d.completedToday, `Finished`, "✓", "teal")}
-      ${rx_tile("Cancelled Today", d.cancelledToday, `Cancelled`, "✕", "gold")}
+      ${rx_tile("Checked-In Today", d.checkedInToday, `Waiting/arrived`, "&#10003;", "dark")}
+      ${rx_tile("Completed Today", d.completedToday, `Finished`, "&#10003;", "teal")}
+      ${rx_tile("Cancelled Today", d.cancelledToday, `Cancelled`, "&#10005;", "danger")}
     </div>
   `;
 
@@ -252,7 +245,7 @@ function rx_showPatientCreate() {
     </div>
 
     <div class="row" style="margin-top:12px;">
-      <button class="primary" onclick="rx_createPatient()">Create Patient</button>
+      <button class="primary" onclick="rx_createPatient()">Register Patient</button>
     </div>
 
     <div id="rx_msg" style="margin-top:10px;"></div>
@@ -294,11 +287,11 @@ async function rx_createPatient() {
       msg.innerHTML = `<div class="ok">Patient created successfully. Patient ID: ${result.patientId}</div>`;
     }
 
-    toast("Success", "Patient created successfully.", "ok");
+    toast("Success", "Patient registered successfully.", "ok");
     rx_loadTilesAndNext();
   } catch (err) {
     if (msg) {
-      msg.innerHTML = `<div class="err">Failed to create patient.</div>`;
+      msg.innerHTML = `<div class="err">Failed to register patient.</div>`;
     }
     throw err;
   }
